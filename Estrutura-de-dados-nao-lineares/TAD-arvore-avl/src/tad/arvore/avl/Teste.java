@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tad.arvore.avl;
 
 /**
@@ -11,11 +6,13 @@ package tad.arvore.avl;
  */
 public class Teste {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // TODO code application logic here
+        ArvoreAVL arvore = new ArvoreAVL();
+        arvore.adicionar(10);
+        arvore.adicionar(9);
+        arvore.adicionar(11);
+        arvore.adicionar(12);
+        arvore.mostrar();
     }
     
 }

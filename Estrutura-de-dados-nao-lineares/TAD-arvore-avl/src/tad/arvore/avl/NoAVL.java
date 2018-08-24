@@ -12,6 +12,7 @@ public class NoAVL {
     
     public NoAVL(int elemento){
         this.elemento = elemento;
+        this.fb = 0;
     }
     
      public int getFb() {

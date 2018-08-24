@@ -340,10 +340,17 @@ public class ArvoreAVL implements IarvoreAVL {
 
     @Override
     public void rotacaoSEsquerda(NoAVL no) {
-        NoAVL subroot = no.getFilhoDireita();
-        NoAVL netoesquerdo = subroot.getFilhoEsquerda();
+        NoAVL subroot = null;
+        if(no.getFilhoDireita()!= null){
+            subroot = no.getFilhoDireita();
+            if(no.getFilhoDireita().getFilhoEsquerda()!=null){
+                NoAVL netoesquerdo = subroot.getFilhoEsquerda();
+                netoesquerdo.setPai(no);
+                no.setFilhoDireita(netoesquerdo);
+            }
+        }
         if(isRoot(no)){
-            subroot.setPai(null);
+            setRaiz(subroot);
         } else {
             subroot.setPai(no.getPai());
             NoAVL novopai = no.getPai();
@@ -353,18 +360,23 @@ public class ArvoreAVL implements IarvoreAVL {
                 novopai.setFilhoDireita(subroot);
             }
         }
-        netoesquerdo.setPai(no);
-        no.setFilhoDireita(netoesquerdo);
         no.setPai(subroot);
         subroot.setFilhoEsquerda(no);
     }
 
     @Override
     public void rotacaoSDireta(NoAVL no) {
-        NoAVL subroot = no.getFilhoEsquerda();
-        NoAVL netodireito = subroot.getFilhoDireita();
+        NoAVL subroot = null;
+        if(no.getFilhoEsquerda()!= null){
+            subroot = no.getFilhoEsquerda();
+            if(no.getFilhoEsquerda().getFilhoDireita()!=null){
+                NoAVL netodireito = subroot.getFilhoDireita();
+                netodireito.setPai(no);
+                no.setFilhoDireita(netodireito);
+            }
+        }
         if(isRoot(no)){
-            subroot.setPai(null);
+            setRaiz(subroot);
         } else {
             subroot.setPai(no.getPai());
             NoAVL novopai = no.getPai();
@@ -374,8 +386,6 @@ public class ArvoreAVL implements IarvoreAVL {
                 novopai.setFilhoDireita(subroot);
             }
         }
-        netodireito.setPai(no);
-        no.setFilhoEsquerda(netodireito);
         no.setPai(subroot);
         subroot.setFilhoDireita(no);
     }

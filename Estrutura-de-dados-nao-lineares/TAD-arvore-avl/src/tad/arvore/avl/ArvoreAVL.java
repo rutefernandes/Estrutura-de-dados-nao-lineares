@@ -1,5 +1,7 @@
 package tad.arvore.avl;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -173,6 +175,7 @@ public class ArvoreAVL implements IarvoreAVL {
             setRaiz(novoNoAVL);
             tamanho++;
             System.out.println(novoNoAVL+" adicionado como Raiz.");
+            atualizarFB(novoNoAVL, 1, true, 0);
         } else {
             NoAVL segura = buscar(o, getRaiz());
             resultado = (int) c.compare(segura.getElemento(), novoNoAVL.getElemento());
@@ -188,7 +191,7 @@ public class ArvoreAVL implements IarvoreAVL {
                 segura.setFilhoDireita(novoNoAVL);
                 novoNoAVL.setPai(segura);
                 tamanho++;
-            //    atualizarFB(novoNoAVL, 1, false, -1);
+                atualizarFB(novoNoAVL, 1, false, -1);
                 System.out.println( novoNoAVL + " adicionado a direita de " + segura.getElemento());
             }
         }
@@ -342,52 +345,58 @@ public class ArvoreAVL implements IarvoreAVL {
 
     @Override
     public void rotacaoSEsquerda(NoAVL no) {
-        if(no.getFilhoDireita()!= null){
-            if(no.getFilhoDireita().getFilhoEsquerda()!=null){
-                NoAVL netoesquerdo = no.getFilhoDireita().getFilhoEsquerda();
+        if(hasRight(no)){
+            NoAVL subroot = rightChild(no);
+            if(hasLeft(rightChild(no))){
+                NoAVL netoesquerdo = leftChild(subroot);
                 netoesquerdo.setPai(no);
                 no.setFilhoDireita(netoesquerdo);
             }
             if(isRoot(no)){
-                setRaiz(no.getFilhoDireita());
+                setRaiz(subroot);
             } else {
-                no.getFilhoDireita().setPai(no.getPai());
                 NoAVL novopai = no.getPai();
                 if(no.getElemento() < novopai.getElemento()){
-                    novopai.setFilhoEsquerda(no.getFilhoDireita());
+                    novopai.setFilhoEsquerda(subroot);
                 } else {
-                    novopai.setFilhoDireita(no.getFilhoDireita());
+                    novopai.setFilhoDireita(subroot);
                 }
+                subroot.setPai(novopai);
             }
-            no.getFilhoDireita().setFilhoEsquerda(no);
+            subroot.setFilhoEsquerda(no);
+            no.setPai(subroot);
+
+        int fb_b_novo, fb_a_novo = 0;
+        fb_b_novo= ((no.getFb() + 1) - min(rightChild(no).getFb(), 0));
+        fb_a_novo = ((rightChild(no).getFb() + 1) - max(fb_b_novo, 0));
+        subroot.setFb(fb_a_novo);
+        no.setFb(fb_b_novo);
         }
-            no.setPai(no.getFilhoDireita());
     }
 
     @Override
     public void rotacaoSDireta(NoAVL no) {
-        if(no.getFilhoEsquerda()!= null){
-            if(no.getFilhoEsquerda().getFilhoDireita()!=null){
-                NoAVL netodireito = no.getFilhoEsquerda().getFilhoDireita();
+        if(hasLeft(no)){
+            NoAVL subroot = leftChild(no);
+            if(hasRight(leftChild(no))){
+                NoAVL netodireito = rightChild(subroot);
                 netodireito.setPai(no);
                 no.setFilhoEsquerda(netodireito);
             }
             if(isRoot(no)){
-            setRaiz(no.getFilhoDireita());
+                setRaiz(subroot);
             } else {
-            no.getFilhoEsquerda().setPai(no.getPai());
-            NoAVL novopai = no.getPai();
-            if(no.getElemento() < novopai.getElemento()){
-                novopai.setFilhoEsquerda(no.getFilhoDireita());
-            } else {
-                novopai.setFilhoDireita(no.getFilhoDireita());
+                NoAVL novopai = no.getPai();
+                if(no.getElemento() < novopai.getElemento()){
+                    novopai.setFilhoEsquerda(subroot);
+                } else {
+                    novopai.setFilhoDireita(subroot);
+                }
+                subroot.setPai(novopai);
             }
-            }
-            no.getFilhoEsquerda().setFilhoDireita(no);
-
+            subroot.setFilhoDireita(no);
+            no.setPai(subroot);
         }
-
-        no.setPai(no.getFilhoDireita());
     }
     
 
@@ -407,23 +416,22 @@ public class ArvoreAVL implements IarvoreAVL {
     
     @Override
     public void atualizarFB(NoAVL no, int tipo, boolean op, int nofb) {
-        
-        
         System.out.println(no.getElemento() + " " +  no.getFb());
         int fb = no.getFb();
         no.setFb(fb + nofb);
         // rotações
-        if (no.getFb() == 2) {
-            if (hasLeft(no) && leftChild(no).getFb() < 0) {
-                rotacaaoDDireita(no);
-            } else {
+        if (fb == 2) {
+            if (hasLeft(no) && leftChild(no).getFb() >= 0) {
                 rotacaoSDireta(no);
+            } else if(hasLeft(no) && leftChild(no).getFb() < 0) {
+                rotacaaoDDireita(no);
             }
-        } else if (no.getFb() == -2) {
-            if (hasRight(no) && rightChild(no).getFb() > 0) {
-                rotacaoDEsquerda(no);
-            } else {
+        } else if (fb == -2) {
+            System.out.println("aq " + no.getFb());
+            if (hasRight(no) && rightChild(no).getFb() <= 0) {
                 rotacaoSEsquerda(no);
+            } else if(hasRight(no) && rightChild(no).getFb() > 0) {
+                rotacaoDEsquerda(no);
             }
         }
         //fb
@@ -436,7 +444,7 @@ public class ArvoreAVL implements IarvoreAVL {
                 }
             }
         } else if(tipo == 2) {
-            if(no.getFb()==0){
+            if(no.getPai()!=null && no.getPai().getFb()==0){
                 if(op){
                     atualizarFB(no.getPai(), tipo, op, -1);
                 } else {

@@ -175,7 +175,6 @@ public class ArvoreAVL implements IarvoreAVL {
             setRaiz(novoNoAVL);
             tamanho++;
             System.out.println(novoNoAVL+" adicionado como Raiz.");
-            atualizarFB(novoNoAVL, 1, true, 0);
         } else {
             NoAVL segura = buscar(o, getRaiz());
             resultado = (int) c.compare(segura.getElemento(), novoNoAVL.getElemento());
@@ -185,13 +184,13 @@ public class ArvoreAVL implements IarvoreAVL {
                 segura.setFilhoEsquerda(novoNoAVL);
                 novoNoAVL.setPai(segura);
                 tamanho++;
-                atualizarFB(novoNoAVL, 1, true, 1);
+                atualizarFB(segura, 1, true, 1);
                 System.out.println( novoNoAVL + " adicionado a esquerda de " + segura.getElemento());
             } else if(resultado<0){
                 segura.setFilhoDireita(novoNoAVL);
                 novoNoAVL.setPai(segura);
                 tamanho++;
-                atualizarFB(novoNoAVL, 1, false, -1);
+                atualizarFB(segura, 1, false, -1);
                 System.out.println( novoNoAVL + " adicionado a direita de " + segura.getElemento());
             }
         }
@@ -241,8 +240,10 @@ public class ArvoreAVL implements IarvoreAVL {
             if (isExternal(n)) {
                 if ((int) c.compare(n.getElemento(), n.getPai().getElemento()) <= 0) {
                     n.getPai().setFilhoEsquerda(null);
+                    atualizarFB(n.getPai(), 2, true, -1);
                 } else {
                     n.getPai().setFilhoDireita(null);
+                    atualizarFB(n.getPai(), 2, false, 1);
                 }
                 this.tamanho--;
                 return n;
@@ -252,9 +253,11 @@ public class ArvoreAVL implements IarvoreAVL {
                 if ((int) c.compare(n.getElemento(), n.getPai().getElemento()) <= 0) {
                     n.getPai().setFilhoEsquerda(n.getFilhoEsquerda());
                     n.getFilhoEsquerda().setPai(n.getPai());
+                    atualizarFB(n.getPai(), 2, true, -1);
                 } else {
                     n.getPai().setFilhoDireita(n.getFilhoEsquerda());
                     n.getFilhoEsquerda().setPai(n.getPai());
+                    atualizarFB(n.getPai(), 2, true, 1);
                 }
                 this.tamanho--;
                 return n;
@@ -263,9 +266,11 @@ public class ArvoreAVL implements IarvoreAVL {
                 if ((int) c.compare(n.getElemento(), n.getPai().getElemento()) <= 0) {
                     n.getPai().setFilhoEsquerda(n.getFilhoDireita());
                     n.getFilhoDireita().setPai(n.getPai());
+                    atualizarFB(n.getPai(), 2, true, -1);
                 } else {
                     n.getPai().setFilhoDireita(n.getFilhoDireita());
                     n.getFilhoDireita().setPai(n.getPai());
+                    atualizarFB(n.getPai(), 2, true, 1);
                 }
                 this.tamanho--;
                 return n;
@@ -351,9 +356,12 @@ public class ArvoreAVL implements IarvoreAVL {
                 NoAVL netoesquerdo = leftChild(subroot);
                 netoesquerdo.setPai(no);
                 no.setFilhoDireita(netoesquerdo);
+            } else {
+                no.setFilhoDireita(null);
             }
             if(isRoot(no)){
                 setRaiz(subroot);
+                subroot.setPai(null);
             } else {
                 NoAVL novopai = no.getPai();
                 if(no.getElemento() < novopai.getElemento()){
@@ -367,8 +375,8 @@ public class ArvoreAVL implements IarvoreAVL {
             no.setPai(subroot);
 
         int fb_b_novo, fb_a_novo = 0;
-        fb_b_novo= ((no.getFb() + 1) - min(rightChild(no).getFb(), 0));
-        fb_a_novo = ((rightChild(no).getFb() + 1) - max(fb_b_novo, 0));
+        fb_b_novo= ((no.getFb() + 1) - min(subroot.getFb(), 0));
+        fb_a_novo = ((subroot.getFb() + 1) - max(fb_b_novo, 0));
         subroot.setFb(fb_a_novo);
         no.setFb(fb_b_novo);
         }
@@ -382,6 +390,8 @@ public class ArvoreAVL implements IarvoreAVL {
                 NoAVL netodireito = rightChild(subroot);
                 netodireito.setPai(no);
                 no.setFilhoEsquerda(netodireito);
+            } else {
+                no.setFilhoEsquerda(null);
             }
             if(isRoot(no)){
                 setRaiz(subroot);
@@ -396,6 +406,14 @@ public class ArvoreAVL implements IarvoreAVL {
             }
             subroot.setFilhoDireita(no);
             no.setPai(subroot);
+            
+            int fb_b = no.getFb(),
+                    fb_a = subroot.getFb(),
+                    fb_b_novo, fb_a_novo;
+            fb_b_novo = fb_b - 1 - Math.max(fb_a, 0);
+            fb_a_novo = fb_a - 1 + Math.min(fb_b_novo, 0);
+            no.setFb(fb_b_novo);
+            subroot.setFb(fb_a_novo);
         }
     }
     
@@ -417,8 +435,8 @@ public class ArvoreAVL implements IarvoreAVL {
     @Override
     public void atualizarFB(NoAVL no, int tipo, boolean op, int nofb) {
         System.out.println(no.getElemento() + " " +  no.getFb());
+        no.setFb(no.getFb() + nofb);
         int fb = no.getFb();
-        no.setFb(fb + nofb);
         // rotações
         if (fb == 2) {
             if (hasLeft(no) && leftChild(no).getFb() >= 0) {
@@ -427,7 +445,7 @@ public class ArvoreAVL implements IarvoreAVL {
                 rotacaaoDDireita(no);
             }
         } else if (fb == -2) {
-            System.out.println("aq " + no.getFb());
+            System.out.println("aq " + fb);
             if (hasRight(no) && rightChild(no).getFb() <= 0) {
                 rotacaoSEsquerda(no);
             } else if(hasRight(no) && rightChild(no).getFb() > 0) {

@@ -47,6 +47,6 @@ public interface IarvoreAVL {
     public void rotacaoSDireta(NoAVL no);
     public void rotacaaoDDireita(NoAVL no);
     public void rotacaoDEsquerda(NoAVL no);
-    public void atualizarFB(NoAVL no, int tipo, boolean op, int nofb);
+    public void atualizarFB(NoAVL no, int tipo, int nofb);
     
 }

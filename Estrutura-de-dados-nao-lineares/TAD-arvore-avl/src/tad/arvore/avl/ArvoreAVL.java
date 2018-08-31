@@ -184,14 +184,14 @@ public class ArvoreAVL implements IarvoreAVL {
                 segura.setFilhoEsquerda(novoNoAVL);
                 novoNoAVL.setPai(segura);
                 tamanho++;
-                atualizarFB(segura, 1, true, 1);
                 System.out.println( novoNoAVL + " adicionado a esquerda de " + segura.getElemento());
+                atualizarFB(segura, 1,  1);
             } else if(resultado<0){
                 segura.setFilhoDireita(novoNoAVL);
                 novoNoAVL.setPai(segura);
                 tamanho++;
-                atualizarFB(segura, 1, false, -1);
                 System.out.println( novoNoAVL + " adicionado a direita de " + segura.getElemento());
+                atualizarFB(segura, 1, -1);
             }
         }
     }
@@ -240,10 +240,10 @@ public class ArvoreAVL implements IarvoreAVL {
             if (isExternal(n)) {
                 if ((int) c.compare(n.getElemento(), n.getPai().getElemento()) <= 0) {
                     n.getPai().setFilhoEsquerda(null);
-                    atualizarFB(n.getPai(), 2, true, -1);
+                    atualizarFB(n.getPai(), 2,-1);
                 } else {
                     n.getPai().setFilhoDireita(null);
-                    atualizarFB(n.getPai(), 2, false, 1);
+                    atualizarFB(n.getPai(), 2, 1);
                 }
                 this.tamanho--;
                 return n;
@@ -253,11 +253,11 @@ public class ArvoreAVL implements IarvoreAVL {
                 if ((int) c.compare(n.getElemento(), n.getPai().getElemento()) <= 0) {
                     n.getPai().setFilhoEsquerda(n.getFilhoEsquerda());
                     n.getFilhoEsquerda().setPai(n.getPai());
-                    atualizarFB(n.getPai(), 2, true, -1);
+                    atualizarFB(n.getPai(), 2, -1);
                 } else {
                     n.getPai().setFilhoDireita(n.getFilhoEsquerda());
                     n.getFilhoEsquerda().setPai(n.getPai());
-                    atualizarFB(n.getPai(), 2, true, 1);
+                    atualizarFB(n.getPai(), 2, 1);
                 }
                 this.tamanho--;
                 return n;
@@ -266,11 +266,11 @@ public class ArvoreAVL implements IarvoreAVL {
                 if ((int) c.compare(n.getElemento(), n.getPai().getElemento()) <= 0) {
                     n.getPai().setFilhoEsquerda(n.getFilhoDireita());
                     n.getFilhoDireita().setPai(n.getPai());
-                    atualizarFB(n.getPai(), 2, true, -1);
+                    atualizarFB(n.getPai(), 2, -1);
                 } else {
                     n.getPai().setFilhoDireita(n.getFilhoDireita());
                     n.getFilhoDireita().setPai(n.getPai());
-                    atualizarFB(n.getPai(), 2, true, 1);
+                    atualizarFB(n.getPai(), 2, 1);
                 }
                 this.tamanho--;
                 return n;
@@ -433,9 +433,9 @@ public class ArvoreAVL implements IarvoreAVL {
     }
     
     @Override
-    public void atualizarFB(NoAVL no, int tipo, boolean op, int nofb) {
-        System.out.println(no.getElemento() + " " +  no.getFb());
+    public void atualizarFB(NoAVL no, int tipo, int nofb) {
         no.setFb(no.getFb() + nofb);
+        
         int fb = no.getFb();
         // rotações
         if (fb == 2) {
@@ -454,19 +454,19 @@ public class ArvoreAVL implements IarvoreAVL {
         }
         //fb
         if(tipo==1){
-            if(no.getPai()!=null && no.getPai().getFb()!=0){
-                if(op){
-                    atualizarFB(no.getPai(), tipo, op, 1);
+            if(no.getPai()!=null && no.getFb()!=0){
+                if(no.getElemento() < no.getPai().getElemento()){
+                    atualizarFB(no.getPai(), tipo, 1);
                 } else {
-                    atualizarFB(no.getPai(), tipo, op, -1);
-                }
+                    atualizarFB(no.getPai(), tipo, -1);
+                }    
             }
         } else if(tipo == 2) {
-            if(no.getPai()!=null && no.getPai().getFb()==0){
-                if(op){
-                    atualizarFB(no.getPai(), tipo, op, -1);
+            if(no.getPai()!=null && no.getFb()==0){
+                if(no.getElemento() < no.getPai().getElemento()){
+                    atualizarFB(no.getPai(), tipo, -1);
                 } else {
-                    atualizarFB(no.getPai(), tipo, op, 1);
+                    atualizarFB(no.getPai(), tipo,1);
                 }
             }
         }

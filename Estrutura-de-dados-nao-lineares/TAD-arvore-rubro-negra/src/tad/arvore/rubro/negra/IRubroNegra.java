@@ -45,9 +45,7 @@ public interface IRubroNegra {
     public int alturaNegra();
     public void rotacaoEsquerda(No no);
     public void rotacaoDireta(No no);
-    public No avo(No no);
-    public No tio(No no);
     public void rotacaoDEsquerda(No no);
     public void rotacaaoDDireita(No no);
-
+    public void insercaoRN(No no);
 }

@@ -170,32 +170,27 @@ public class RubroNegra implements IRubroNegra {
         No novoNo = new No(o);
         int resultado;
         if(isEmpty()){
-            /* Caso 1: O novo nó N está na raiz da árvore. Neste caso, este nó é
-            repintado de preto para satisfazer a Propriedade 2. */
             setRaiz(novoNo);
-            novoNo.setCor("preto");
+            insercaoRN(novoNo);
             tamanho++;
             System.out.println(novoNo+" adicionado como Raiz.");
         } else {
             No segura = buscar(o, getRaiz());
             resultado = (int) c.compare(segura.getElemento(), novoNo.getElemento());
-            No antecessor = segura.getPai();
-            if(antecessor.getCor()=="rubro"){
-                
-            }
             if(resultado==0){
                 System.out.println("Elemento ja existe.");
             } else if(resultado>0){
-                
                 segura.setFilhoEsquerda(novoNo);
                 novoNo.setPai(segura);
                 novoNo.setCor("rubro");
+                insercaoRN(novoNo);
                 tamanho++;
                 System.out.println( novoNo + " adicionado a esquerda de " + segura.getElemento());
             } else if(resultado<0){
                 segura.setFilhoDireita(novoNo);
                 novoNo.setPai(segura);
                 novoNo.setCor("rubro");
+                insercaoRN(novoNo);
                 tamanho++;
                 System.out.println( novoNo + " adicionado a direita de " + segura.getElemento());
             }
@@ -218,58 +213,50 @@ public class RubroNegra implements IRubroNegra {
     
     public void insercaoRN(No no){
         if(isRoot(no)){
-            
+            no.setCor("negro");
         } else {
-            //CASO 1
             No pai = no.getPai();
             if(pai.getCor().equalsIgnoreCase("negro")){
-                //inserir e pintar de rubro
-            //CASO 2
+                no.setCor("rubro");
             } else if(pai.getCor().equalsIgnoreCase("rubro") && isInternal(pai)){
                 No avo = pai.getPai();
                 No tio = null;
                 if(avo.getCor().equalsIgnoreCase("negro")){
+                    //verificar se é filho esq ou dir
                     if(leftOrRight(no)==1 && hasRight(avo)){
                         tio = avo.getFilhoDireita();
                     } else if(leftOrRight(no)==-1 && hasLeft(avo)){
                         tio = avo.getFilhoEsquerda();
                     }
-                    if(tio.getCor().equalsIgnoreCase("rubro")){
+                    if(tio!=null && tio.getCor().equalsIgnoreCase("rubro")){
+                        
                         avo.setCor("rubro");
                         tio.setCor("negro");
                         pai.setCor("negro");
-                    //AVO(RUBRO), tio(negro), pai(negro)
-                    //– Se o avo for rubro o processo deverá ser repetido fazendo no=avo
-                    } else if(avo.getCor().equalsIgnoreCase("rubro")){
-                        
+                        insercaoRN(avo);
+                    } else if(tio==null || tio.getCor().equalsIgnoreCase("negro")){
+                    //fazer rotações com pai, v, avo e tio. Existe 4 subcasos:
+                        int paiPosicao = leftOrRight(pai);
+                        int vPosicao = leftOrRight(no);
+                        pai.setCor("negro");
+                        avo.setCor("rubro");
+                        if(paiPosicao==-1 && vPosicao==-1){
+                            // se pai filho direito e v direito = direita simples
+                            rotacaoEsquerda(avo);
+                        } else if(paiPosicao==1 && vPosicao==1){
+                            // se pai esquerdo e v esquerdo = esquerda simples
+                            rotacaoDireta(avo);
+                        } else if(paiPosicao==-1 && vPosicao==1){
+                            // se pai direito e v esquerdo = esquerda dupla
+                            rotacaoDEsquerda(avo);
+                        } else if(paiPosicao==-1 && vPosicao==-1){
+                            // se pai esquerdo e v direito = direita dupla
+                            rotacaaoDDireita(avo);
+                        }
                     }
                 }
-            } else {
-                
             }
-            
         }
-       /*
-        
-        Caso 2: Suponha w(pai de v) rubro e t, avó de v, é negro. Se u, o irmão de w (tio de v) é rubro, ainda é possível manter o
-    critério IV apenas fazendo a re-coloração de
-    t(Rubro),u(Negro) e w(Negro)
-        
-        */
-        
-    }
-    
-    
-    public void casoUm(){
-        
-    }
-    
-    public void casoDois(){
-        
-    }
-    
-    public void casoTres(){
-        
     }
     
     public String toString () {
@@ -277,13 +264,13 @@ public class RubroNegra implements IRubroNegra {
         int h = this.height() + 5;
         int l = this.size() + 5;
         
-        Object matrix[][] = new Object[h][l];
+        No matrix[][] = new No[h][l];
         
         int i = 0;
         while (itr.hasNext()) {
             No n = (No) itr.next();
             int d = this.depth(n);
-            matrix[d][i] = n.getElemento();
+            matrix[d][i] = n;
             i++;
         }
         
@@ -291,7 +278,7 @@ public class RubroNegra implements IRubroNegra {
         
         for (i = 0; i < h; i++){
             for (int j = 0; j < l; j++) {
-                str += matrix[i][j] == null ? "  " : ((int) matrix[i][j] >= 0 ? " " + matrix[i][j] : matrix[i][j]);
+                str += matrix[i][j] == null ? "  " : (matrix[i][j].getElemento() >= 0 ? " " + matrix[i][j] : matrix[i][j]);
             }
             str += "\n";
         }
@@ -489,7 +476,7 @@ public class RubroNegra implements IRubroNegra {
             no.setPai(subroot);
         }
     }
-
+/*
     @Override
     public No avo(No no) {
         if(isExternal(no)){
@@ -510,6 +497,7 @@ public class RubroNegra implements IRubroNegra {
             return leftChild(avo);
         }
     }
+ */
     
     @Override
     public void rotacaaoDDireita(No no) {

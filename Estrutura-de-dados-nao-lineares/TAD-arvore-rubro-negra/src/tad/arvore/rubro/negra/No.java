@@ -60,6 +60,6 @@ public class No {
     
     @Override
     public String toString(){
-        return "(" + this.getElemento() + ")"; 
+        return "(" + this.getElemento() + "/" + this.getCor().charAt(0) + ")"; 
     }
 }

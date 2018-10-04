@@ -48,4 +48,5 @@ public interface IRubroNegra {
     public void rotacaoDEsquerda(No no);
     public void rotacaaoDDireita(No no);
     public void insercaoRN(No no);
+    public void remocaoRN(No no);
 }

@@ -42,14 +42,34 @@ public class Teste {
         arvore.adicionar(17);
         arvore.adicionar(16);
         arvore.adicionar(15);
+        
         arvore.adicionar(37);
         
-        arvore.removerE(47);
-        arvore.removerE(51);
-        arvore.removerE(37);
-        arvore.removerE(36);
-        arvore.removerE(39);
-        arvore.removerE(38);
+        
+        
+        arvore.remover(47);
+        
+        
+        
+        arvore.remover(51);
+        
+        
+        
+        arvore.remover(37);
+        
+        
+        
+        arvore.remover(36);
+        
+        
+        
+        arvore.remover(39);
+        
+        
+        
+        arvore.remover(38);
+        
+        
         arvore.mostrar();
     }
     

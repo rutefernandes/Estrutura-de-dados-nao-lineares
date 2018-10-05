@@ -10,6 +10,7 @@ import java.util.Iterator;
 public class RubroNegra implements IRubroNegra {
      private No raiz;
     private int tamanho;
+    No nil;
     Comparator c = new Comparator();
     private ArrayList<No> inOrder = new ArrayList<No>();
     private ArrayList<No> preOrder = new ArrayList<No>();
@@ -18,11 +19,19 @@ public class RubroNegra implements IRubroNegra {
     public RubroNegra(){
         this.raiz = null;
         this.tamanho = 0;
+        nil = new No(-1);
+        nil.setCor("negro");
+        nil.setFilhoDireita(nil);
+        nil.setFilhoEsquerda(nil);
     }
     
     public RubroNegra(int o){
         raiz = new No(o);
         this.raiz.setCor("negro");
+        nil = new No(-1);
+        nil.setCor("negro");
+        nil.setFilhoDireita(nil);
+        nil.setFilhoEsquerda(nil);
 	tamanho++;
     }
     
@@ -292,11 +301,124 @@ public class RubroNegra implements IRubroNegra {
         return oldN;
     }
 
+     
+    public boolean isLeftChild(No no){
+        if(no.getPai()!=null){
+            if(no.getPai().getFilhoEsquerda()==no){
+                return true;
+            }
+        }
+        return false;
+    }   
+    
+    
+    public No remover(int valor) {
+       No deletar = buscar(valor);
+       if(deletar == null){
+           return this.nil;
+       }
+       No deletado = remover(deletar, deletar.getElemento());
+       corrigirRemocao(deletado);
+       return deletado;
+    }   
+   
+    
+    public void corrigirRemocao(No n) {
+        // Situação 2: no é negro e seu sucessor é rubro
+        // Já corrigido na remoção, porém deve-se pintar o sucessor de negro
+        // Situação 3: n é negro e seu sucessor é negro
+        if (n.getCor().equalsIgnoreCase("negro")) {
+            No pai = n.getPai();
+            if (pai != null) {
+                boolean isLeft = isLeftChild(n);
+                No irmao = isLeft ? rightChild(n.getPai()): leftChild(n.getPai());
+                irmao = irmao != null ? irmao : this.nil;
+                No sobrinhoEsquerda = leftChild(irmao) != null ? leftChild(irmao): this.nil;
+                No sobrinhoDireita = rightChild(irmao) != null ? rightChild(irmao)  : this.nil;
+                
+                
+                if (!irmao.getCor().equalsIgnoreCase("negro")) { // Tem irmão rubro
+                    if (pai.getCor().equalsIgnoreCase("negro")) { // Tem pai negro
+                        // Caso 1:  se x é negro e x tem irmão w rubro e pai negro
+                        pai.setDuploNegro(true);
+                        rotacaoEsquerda(pai);
+                        irmao.setCor("negro");
+                        pai.setCor("rubro");
+                        
+                    } else { // Tem pai rubro
+                        
+                    }
+                } 
+                else { // Tem irmão negro
+                    if (irmao != this.nil) { 
+                        if(sobrinhoEsquerda.getCor().equalsIgnoreCase("negro") && sobrinhoDireita.getCor().equalsIgnoreCase("negro")) { // filhos do irmão são negros
+                            if (pai.getCor().equalsIgnoreCase("negro")) { // Tem pai negro
+                                // Caso 2a: se x é negro, tem irmão w negro com filhos negros e pai negro
+                                irmao.setCor("rubro");
+                            } else { // Tem pai rubro
+                                // Caso 2b: se x é negro, tem irmão w negro com filhos negros e pai rubro
+                                irmao.setCor("rubro");
+                                pai.setCor("negro");
+                            }
+                        }
+                        
+                        if (!sobrinhoEsquerda.getCor().equalsIgnoreCase("negro") && sobrinhoDireita.getCor().equalsIgnoreCase("negro")) {
+                            // Caso 3: se x é negro, tem irmão w negro, tem
+                            // pai de qualquer cor (rubro ou negro), tem
+                            // irmão w com filho esquerdo rubro e irmão w
+                            // com filho direito negro.
+                            rotacaoDireta(irmao);
+                            irmao.setCor("rubro");
+                            sobrinhoEsquerda.setCor("negro");
+                        }
+                        
+                        if (!sobrinhoDireita.getCor().equalsIgnoreCase("negro")) {
+                            // Caso 4: se x é negro, tem irmão w negro, tem
+                            // pai de qualquer cor (rubro ou negro), tem
+                            // irmão w com filho esquerdo qualquer cor e
+                            // irmão w com filho direito rubro.
+                            rotacaoEsquerda(pai);
+                            irmao.setCor(pai.getCor());
+                            pai.setCor("negro");
+                            sobrinhoDireita.setCor("negro");
+                        }
+                            
+                    } 
+                }
+                
+                
+                if (pai.getCor().equalsIgnoreCase("negro")) {
+                    // Caso 1: n é negro e tem irmão rubro e pai negro
+                    if (!irmao.getCor().equalsIgnoreCase("negro")) { // Tem irmão rubro
+                        
+                    }
+                    // Caso 2a: n é negro, tem irmão negro com filhos negros e pai negro
+                    else { // Tem irmão negro
+                        if (irmao != this.nil && sobrinhoEsquerda.getCor().equalsIgnoreCase("negro") && sobrinhoDireita.getCor().equalsIgnoreCase("negro")) { // filhos do irmão são pretos
+                            irmao.setCor("rubro");
+                        }
+                    }
+                } else { // tem o pai rubro
+                    // Caso 2b: se n é negro, tem irmão negro com filhos negros e pai rubro
+                    if (irmao.getCor().equalsIgnoreCase("negro")) {
+                        if (irmao != this.nil && sobrinhoEsquerda.getCor().equalsIgnoreCase("negro") && sobrinhoDireita.getCor().equalsIgnoreCase("negro")) { // filhos do irmão são pretos
+                            irmao.setCor("rubro");
+                            pai.setCor("negro");
+                        }
+                    }
+                }
+                // Pai de qualquer cor
+            }
+            
+        }
+        
+    }
+    
+    
     public void removerE(int n){
         No resultado = buscar(n);
         remover(resultado);
     }
-    
     
     @Override
     public No remover(No no) {
@@ -312,7 +434,6 @@ public class RubroNegra implements IRubroNegra {
                 } else {
                     n.getPai().setFilhoDireita(null);
                 }
-                remocaoRN(n);
                 this.tamanho--;
                 return n;
             }
@@ -325,7 +446,6 @@ public class RubroNegra implements IRubroNegra {
                     n.getPai().setFilhoDireita(n.getFilhoEsquerda());
                     n.getFilhoEsquerda().setPai(n.getPai());
                 }
-                remocaoRN(n);
                 this.tamanho--;
                 return n;
             }
@@ -337,7 +457,6 @@ public class RubroNegra implements IRubroNegra {
                     n.getPai().setFilhoDireita(n.getFilhoDireita());
                     n.getFilhoDireita().setPai(n.getPai());
                 }
-                remocaoRN(n);
                 this.tamanho--;
                 return n;
             }
@@ -349,7 +468,6 @@ public class RubroNegra implements IRubroNegra {
             Object valorBackup = andaEsq.getElemento();
             remover(andaEsq, valorBackup);
             n.setElemento((int) valorBackup);
-            remocaoRN(n);
             this.tamanho--;
             return n;
         }
@@ -362,80 +480,6 @@ public class RubroNegra implements IRubroNegra {
         } else {
             return false;
         }
-    }
-    
-    @Override
-    public void remocaoRN(No no) {
-//O 1 caso verifica se o pai do nó não é nulo, se for vai para o segundo caso. 
-        if(no.getPai()!=null){
-            int posicaoV = leftOrRight(no);
-            No irmao = null;
-            if(posicaoV==1 && hasRight(no.getPai())){
-                irmao = no.getPai().getFilhoDireita();
-            } else if(posicaoV==-1 && hasLeft(no.getPai())){
-                irmao = no.getPai().getFilhoEsquerda();
-            }
-//No 2 caso, se o nó e seu pai forem pretos    
-            if(no.getCor().equalsIgnoreCase("negro") && no.getPai().getCor().equalsIgnoreCase("negro")){
-                    if(irmao!=null){
-//e seu irmão for vermelho o pai deve ser pintado de vermelho e o irmão de preto
-                        if(irmao.getCor().equalsIgnoreCase("rubro")){  
-                            no.getPai().setCor("rubro");
-                            irmao.setCor("negro");
-//e então se o nó for filho esquerdo, faz a rotação à esquerda de seu pai e vai pro próximo caso 
-                            if(posicaoV==1){
-                                rotacaoEsquerda(no.getPai());
-                            } else if(posicaoV==-1){
-//se for filho direito, rotaciona o pai à direita e vai pro próximo caso.                                   
-                                rotacaoDireta(no.getPai());
-                            }
-//se o pai do nó, o irmão, o filho esquerdo e direito do irmão forem todos pretos, pinta o irmão de vermelho                            
-                        } else if(irmao.getCor().equalsIgnoreCase("negro")){
-                            if(hasLeftAndRight(irmao)){
-                                if(leftChild(irmao).getCor().equalsIgnoreCase("negro") && rightChild(irmao).getCor().equalsIgnoreCase("negro")){
-                                    irmao.setCor("rubro");
-//volte para o primeiro caso com o pai do nó
-                                    remocaoRN(no.getPai());
-                                }
-                            }
-                        }  
-                    }   
-            } else if(no.getCor().equalsIgnoreCase("negro") && no.getPai().getCor().equalsIgnoreCase("rubro") ){
-                if(hasLeftAndRight(irmao)){
-// No quarto caso, se o irmão e o filho esquerdo e direito do irmão forem pretos e o pai do nó for vermelho
-                    if(irmao.getCor().equalsIgnoreCase("negro") && leftChild(irmao).getCor().equalsIgnoreCase("negro") && rightChild(irmao).getCor().equalsIgnoreCase("negro")){
-//deve pintar o irmão de vermelho e o pai do nó de preto                          
-                        irmao.setCor("rubro");
-                        no.getPai().setCor("negro");     
-/*o quinto caso, se o nó for filho esquerdo e o filho direito do irmão for preto deverá pintar o irmão de vermelho e o filho 
-esquerdo do irmão de preto e aí sim rotacionar à direita o irmão, */ 
-                    } else if(posicaoV==1 && rightChild(irmao).getCor().equalsIgnoreCase("negro")){
-                        irmao.setCor("rubro");
-                        leftChild(irmao).setCor("negro");
-                        rotacaoDireta(irmao);
-/*mas se o nó for filho direito deverá pintar o irmão de vermelho e o filho direito do irmão de preto e então rotacionar 
-para esquerda o irmão*/
-                    } else if(posicaoV==-1 && rightChild(irmao).getCor().equalsIgnoreCase("negro")){
-                        irmao.setCor("rubro");
-                        rightChild(irmao).setCor("negro");
-                        rotacaoEsquerda(irmao);
-// Ao chegar no último caso deverá pintar o pai do nó de preto                 
-                    } else {
-                        no.getPai().setCor("negro");
-// caso o nó seja filho esquerdo, pinta o filho direito do irmão do nó de preto e rotaciona o pai do nó para a esquerda, 
-                        if(posicaoV==1){
-                            rightChild(irmao).setCor("negro");
-                            rotacaoEsquerda(no.getPai());
-// se o nó for filho direito, pinta o filho esquerdo do irmão de preto e rotaciona o pai para direita.
-                        } else if(posicaoV==-1){
-                            leftChild(irmao).setCor("negro");
-                            rotacaoDireta(no.getPai());
-                        }
-                    }
-                }
-            }
-        }
-        
     }
 
     @Override

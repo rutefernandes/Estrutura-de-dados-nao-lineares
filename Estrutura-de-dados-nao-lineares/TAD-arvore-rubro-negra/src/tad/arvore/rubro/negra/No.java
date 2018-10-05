@@ -10,12 +10,22 @@ public class No {
     private No filhoEsquerda;
     private No filhoDireita;
     private String cor;
+    private boolean duplonegro;
     
     public No(){
     }
     
     public No(int elemento){
         this.elemento = elemento;
+    }
+    
+    
+    public boolean getDuploNegro(){
+        return duplonegro;
+    }
+    
+    public void setDuploNegro(boolean dubplonegro){
+        this.duplonegro = duplonegro;
     }
     
     public int getElemento() {

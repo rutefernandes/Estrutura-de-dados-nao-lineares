@@ -64,9 +64,6 @@ public class Teste {
         
         
         arvore.remover(39);
-        
-        
-        
         arvore.remover(38);
         
         

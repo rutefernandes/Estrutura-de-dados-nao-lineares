@@ -1,55 +1,30 @@
 package tad.grafo;
 public class Vertice implements IVertice{
-
+    private int chave;
+    private double valor;
+    
+    public Vertice(int chave, double valor) {
+        this.chave = chave;
+        this.valor = valor;
+    }
+    
     @Override
     public int getChave() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return chave;
     }
 
     @Override
     public void setChave(int chave) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.chave = chave;
     }
 
     @Override
     public double getValor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return valor;
     }
 
     @Override
     public void setValor(double valor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.valor = valor;
     }
-
-    @Override
-    public boolean ehDirecionada() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setEhDirecionada(boolean isDirected) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setVerticeDestino(Vertice v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Vertice getVerticeDestino() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setVerticeOrigem(Vertice v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Vertice getVerticeOrigem() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
 }

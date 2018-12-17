@@ -1,45 +1,66 @@
 package tad.grafo;
 public class Aresta implements IAresta{
+    private Vertice verticeOrigem;
+    private Vertice verticeDestino;
+    private double valor;
+    private boolean direcionada;   
+    
+    public Aresta(Vertice verticeOrigem, Vertice verticeDestino){
+        this.verticeDestino = verticeDestino;
+        this.verticeOrigem = verticeOrigem;
+    }
+    
+    public Aresta(Vertice verticeOrigem, Vertice verticeDestino,double valor){
+        this.verticeDestino = verticeDestino;
+        this.verticeOrigem = verticeOrigem;
+        this.valor = valor;
+    }
+    
+    public Aresta(Vertice verticeOrigem, Vertice verticeDestino,double valor, boolean direcionada){
+        this.verticeDestino = verticeDestino;
+        this.verticeOrigem = verticeOrigem;
+        this.valor = valor;
+        this.direcionada = direcionada;
+    }      
+    
+    
     @Override
     public Vertice getVerticeDestino() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return verticeDestino;
     }
 
     @Override
     public void setVerticeDestino(Vertice verticeDestino) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.verticeDestino = verticeDestino;
     }
 
     @Override
     public Vertice getVerticeOrigem() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.verticeOrigem;
     }
 
     @Override
     public void setVerticeOrigem(Vertice verticeOrigem) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.verticeOrigem = verticeOrigem;
     }
 
     @Override
     public boolean éDirecionada() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return direcionada;
     }
 
     @Override
     public void setDirecionada(boolean direcionada) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.direcionada = direcionada;
     }
 
     @Override
     public double getValor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return valor;
     }
 
     @Override
     public void setValor(double valor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.valor = valor;
     }
-
-
-    
 }

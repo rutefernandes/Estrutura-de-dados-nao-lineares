@@ -3,7 +3,14 @@ package tad.grafo;
 import java.util.Vector;
 
 public class Grafo implements IGrafo {
-
+    private int qtdVertice;
+    private Vector Vertice;
+    private Aresta matrizAdj[][];
+    
+    public Grafo(){
+        
+    }
+    
     @Override
     public void inserirVertice(tad.grafo.Vertice Vertice) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -11,7 +18,25 @@ public class Grafo implements IGrafo {
 
     @Override
     public void removerVertice(tad.grafo.Vertice Vertice) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        qtdVertice--;
+        int índice=achaIndice(Vertice.getChave());
+        Vertice.remove(índice);  // remove o vértice do vector    
+        // remove linhas e colunas da matriz de adjacência
+        Aresta tempMatrizAdj[][]=new Aresta[qtdVertice][qtdVertice];
+        int ff=0,gg;
+        for(int f=0;f<qtdVertice+1;f++){
+            gg=0;
+            for(int g=0;g<qtdVertice+1;g++){
+                if(f!=índice && g!=índice){
+                  tempMatrizAdj[ff][gg]= matrizAdj[f][g];                  
+                  if(g!=índice)
+                      gg++;                  
+                }                
+            }
+            if(f!=índice)
+                ff++;
+        }
+        matrizAdj=tempMatrizAdj;
     }
 
     @Override
@@ -56,7 +81,7 @@ public class Grafo implements IGrafo {
 
     @Override
     public Vector Vertice() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Vertice;
     }
 
     @Override
@@ -103,6 +128,8 @@ public class Grafo implements IGrafo {
     public boolean ehDirecionada(tad.grafo.Aresta aresta) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-  
-    
+
+    private int achaIndice(int chave) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -23,7 +23,6 @@ public class Aresta implements IAresta{
         this.direcionada = direcionada;
     }      
     
-    
     @Override
     public Vertice getVerticeDestino() {
         return verticeDestino;

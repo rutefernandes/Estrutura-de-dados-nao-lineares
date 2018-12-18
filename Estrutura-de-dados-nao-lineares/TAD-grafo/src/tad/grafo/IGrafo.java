@@ -26,10 +26,4 @@ public interface IGrafo {
     public abstract Vector finalVertice(Aresta a);
     public abstract Vertice oposto(Vertice v, Aresta a) throws OpostoError;
     public abstract boolean éAdjacente(Vertice v, Vertice w);
-        
-    // Grafo Direcionado 
-    public abstract void substituir(Vertice v, double x);
-    public abstract void substituir(Aresta a, double x); 
-    public abstract void inserirArestaDirecionada(Vertice v, Vertice w, double o);
-    public boolean ehDirecionada(Aresta aresta);
 }

@@ -1,135 +1,192 @@
 package tad.grafo;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 public class Grafo implements IGrafo {
     private int qtdVertice;
-    private Vector Vertice;
+    private Vector vertices;
     private Aresta matrizAdj[][];
     
     public Grafo(){
-        
+        qtdVertice = 0;
+        vertices = new Vector();
     }
     
     @Override
-    public void inserirVertice(tad.grafo.Vertice Vertice) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void inserirVertice(Vertice vertice) {
+        qtdVertice++;
+        vertices.add(vertice);
+        Aresta matrizTemp[][] = new Aresta[qtdVertice][qtdVertice];
+        for(int i = 0; i< qtdVertice -1; ++i){
+            for(int j=0; j< qtdVertice -1; ++i){
+                matrizTemp[i][j] = matrizAdj[i][j];
+            }
+        }
+        
+        for(int i = 0; i< qtdVertice; ++i){
+            matrizTemp[qtdVertice -1][i] = matrizTemp[i][qtdVertice -1] = null;
+        }
+        matrizAdj = matrizTemp;
     }
 
     @Override
-    public void removerVertice(tad.grafo.Vertice Vertice) {
+    public void removerVertice(Vertice vertice) {
         qtdVertice--;
-        int índice=achaIndice(Vertice.getChave());
-        Vertice.remove(índice);  // remove o vértice do vector    
+        int indice = achaIndice(vertice.getChave());
+        vertices.remove(indice);  // remove o vértice do vector    
         // remove linhas e colunas da matriz de adjacência
         Aresta tempMatrizAdj[][]=new Aresta[qtdVertice][qtdVertice];
         int ff=0,gg;
-        for(int f=0;f<qtdVertice+1;f++){
+        for(int f=0; f<qtdVertice+1; f++){
             gg=0;
             for(int g=0;g<qtdVertice+1;g++){
-                if(f!=índice && g!=índice){
+                if(f!=indice && g!=indice){
                   tempMatrizAdj[ff][gg]= matrizAdj[f][g];                  
-                  if(g!=índice)
+                  if(g!=indice)
                       gg++;                  
-                }                
+                   }                
             }
-            if(f!=índice)
+            if(f!=indice)
                 ff++;
         }
         matrizAdj=tempMatrizAdj;
     }
 
     @Override
-    public tad.grafo.Aresta insereAresta(tad.grafo.Vertice VerticeUm, tad.grafo.Vertice VerticeDois, double valor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Aresta insereAresta(Vertice VerticeUm, Vertice VerticeDois, double valor) {
+        Aresta a = new Aresta(VerticeUm, VerticeDois, valor);
+        int ind1 = achaIndice(VerticeUm.getChave());
+        int ind2 = achaIndice(VerticeDois.getChave());
+        matrizAdj[ind1][ind2] = matrizAdj[ind2][ind1];
+        return a;
     }
 
     @Override
-    public tad.grafo.Aresta insereAresta(tad.grafo.Vertice VerticeUm, tad.grafo.Vertice VerticeDois) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Aresta insereAresta(Vertice VerticeUm, Vertice VerticeDois) {
+        Aresta a = new Aresta(VerticeUm, VerticeDois);
+        int ind1 = achaIndice(VerticeUm.getChave());
+        int ind2 = achaIndice(VerticeDois.getChave());
+        matrizAdj[ind1][ind2] = matrizAdj[ind2][ind1];
+        return a;
     }
 
     @Override
-    public void removeAresta(tad.grafo.Aresta Aresta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void removeAresta(Aresta a) {
+        int ind1 = achaIndice(a.getVerticeDestino().getChave());
+        int ind2 = achaIndice(a.getVerticeOrigem().getChave());
+        matrizAdj[ind1][ind2] = matrizAdj[ind2][ind1] = null;
     }
 
     @Override
-    public tad.grafo.Aresta insereArco(tad.grafo.Vertice VerticeUm, tad.grafo.Vertice VerticeDois, double valor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Aresta insereArco(Vertice VerticeUm, Vertice VerticeDois, double valor) {
+        Aresta A = new Aresta(VerticeUm, VerticeDois, valor, true);
+        int ind1 = achaIndice(VerticeUm.getChave());
+        int ind2 = achaIndice(VerticeDois.getChave());
+        matrizAdj[ind1][ind2] = A; 
+        return A;
     }
 
     @Override
-    public tad.grafo.Aresta insereArco(tad.grafo.Vertice VerticeUm, tad.grafo.Vertice VerticeDois) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Aresta insereArco(Vertice verticeUm, Vertice verticeDois) {
+        Aresta a = new Aresta(verticeUm, verticeDois);
+        int ind1 = achaIndice(verticeUm.getChave());
+        int ind2 = achaIndice(verticeDois.getChave());
+        matrizAdj[ind1][ind2] = a;
+        return a;
     }
 
     @Override
-    public void removeArco(tad.grafo.Aresta Aresta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int grau(tad.grafo.Vertice Vertice) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void removeArco(Aresta aresta) {
+        int ind1 = achaIndice(aresta.getVerticeOrigem().getChave());
+        int ind2 = achaIndice(aresta.getVerticeDestino().getChave());
+        matrizAdj[ind1][ind2] = null;
     }
 
     @Override
     public int ordem() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return qtdVertice;
     }
 
     @Override
     public Vector Vertice() {
-        return Vertice;
+        return vertices;
+    } 
+    
+    private int achaIndice(int chave) {
+       Iterator i = vertices.iterator();
+       int idx = 0;
+       while(i.hasNext()){
+           Vertice v = (Vertice)(i.next());
+           if(v.getChave() == chave){
+               return idx;
+           }
+           ++idx;
+       }
+       return -1;
     }
-
+    
+    @Override
+    public int grau(Vertice vertice) {
+        return ArestaIncidentes(vertice).size();
+    }
+    
     @Override
     public Vector Aresta() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Vector v = new Vector();
+        for(int i = 0; i< qtdVertice; ++i){
+            for(int j = 0; j<qtdVertice; ++j){
+                v.add(matrizAdj[i][j]);
+            }
+        }
+        return v;
     }
 
     @Override
-    public Vector ArestaIncidentes(tad.grafo.Vertice vertice) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Vector ArestaIncidentes(Vertice vertice) {
+        Iterator i = Aresta().iterator();
+        Vector<Aresta> arestasInc = new Vector();
+        
+        while(i.hasNext()){
+            Aresta aAtual = (Aresta) i.next();
+            if(aAtual.getVerticeDestino().getChave() == vertice.getChave()){
+                arestasInc.add(aAtual);
+            }
+        }
+        return arestasInc;
     }
 
     @Override
-    public Vector finalVertice(tad.grafo.Aresta a) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Vector finalVertice(Aresta a) {
+        Vector<Vertice> vF = new Vector<>();
+        vF.add(a.getVerticeDestino());
+        vF.add(a.getVerticeOrigem());
+        return vF;
     }
 
     @Override
-    public tad.grafo.Vertice oposto(tad.grafo.Vertice v, tad.grafo.Aresta a) throws OpostoError {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean éAdjacente(Vertice v, Vertice w) {
+        int ind1 = achaIndice(v.getChave());
+        int ind2 = achaIndice(w.getChave());
+        return matrizAdj[ind1][ind2] != null;
     }
-
+    
+    
     @Override
-    public boolean éAdjacente(tad.grafo.Vertice v, tad.grafo.Vertice w) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void substituir(tad.grafo.Vertice v, double x) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void substituir(tad.grafo.Aresta a, double x) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void inserirArestaDirecionada(tad.grafo.Vertice v, tad.grafo.Vertice w, double o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean ehDirecionada(tad.grafo.Aresta aresta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private int achaIndice(int chave) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Vertice oposto(Vertice v, Aresta a) throws OpostoError {
+        Vertice aDestino = a.getVerticeDestino();
+        Vertice aOrigem = a.getVerticeOrigem();
+        
+        if(aDestino.getChave() == v.getChave()){
+            if(éAdjacente(aDestino, v)){
+                return aOrigem;
+            }
+        }
+        
+        if(aOrigem.getChave() == v.getChave()){
+            return aDestino;
+        }
+        
+        return null;
     }
 }

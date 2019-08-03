@@ -16,7 +16,6 @@ public class ArvoreAVL implements IarvoreAVL {
     private ArrayList<NoAVL> preOrder = new ArrayList<NoAVL>();
     private ArrayList<NoAVL> posOrder = new ArrayList<NoAVL>();
     Comparador c = new Comparador();
-
     
     public ArvoreAVL(){
         this.raiz = null;
@@ -25,7 +24,7 @@ public class ArvoreAVL implements IarvoreAVL {
     
     public ArvoreAVL(int o){
         raiz = new NoAVL(o);
-	tamanho++;
+        tamanho++;
     }
     
     public NoAVL getRaiz() {
@@ -248,7 +247,7 @@ public class ArvoreAVL implements IarvoreAVL {
                 this.tamanho--;
                 return n;
             }
-            /*um nÃ³*/
+            /*um nó*/
             if (n.getFilhoEsquerda() != null && n.getFilhoDireita() == null) {
                 if ((int) c.compare(n.getElemento(), n.getPai().getElemento()) <= 0) {
                     n.getPai().setFilhoEsquerda(n.getFilhoEsquerda());
@@ -275,7 +274,7 @@ public class ArvoreAVL implements IarvoreAVL {
                 this.tamanho--;
                 return n;
             }
-            /*dois nÃ³s*/
+            /*dois nós*/
             NoAVL andaEsq = n.getFilhoDireita();
             while (andaEsq.getFilhoEsquerda() != null) {
                 andaEsq = andaEsq.getFilhoEsquerda();
@@ -294,7 +293,6 @@ public class ArvoreAVL implements IarvoreAVL {
         System.out.println(this.toString());
     }
     
-       
     public Iterator preOrder(){
         preOrder = new ArrayList();
         return (root()==null)?null:preOrder(root()); 
@@ -352,6 +350,7 @@ public class ArvoreAVL implements IarvoreAVL {
     public void rotacaoSEsquerda(NoAVL no) {
         if(hasRight(no)){
             NoAVL subroot = rightChild(no);
+            // Lidando com filho esquerdo do filho direito do nó atual (nó atual (b) -> filho direito (a) -> neto esquerdo (c))
             if(hasLeft(rightChild(no))){
                 NoAVL netoesquerdo = leftChild(subroot);
                 netoesquerdo.setPai(no);
@@ -359,12 +358,13 @@ public class ArvoreAVL implements IarvoreAVL {
             } else {
                 no.setFilhoDireita(null);
             }
+            // lidando com pai do nó atual
             if(isRoot(no)){
                 setRaiz(subroot);
                 subroot.setPai(null);
             } else {
                 NoAVL novopai = no.getPai();
-                if(no.getElemento() < novopai.getElemento()){
+                if(no.getElemento() < novopai.getElemento()){ 
                     novopai.setFilhoEsquerda(subroot);
                 } else {
                     novopai.setFilhoDireita(subroot);
@@ -374,11 +374,12 @@ public class ArvoreAVL implements IarvoreAVL {
             subroot.setFilhoEsquerda(no);
             no.setPai(subroot);
 
-        int fb_b_novo, fb_a_novo = 0;
-        fb_b_novo= ((no.getFb() + 1) - min(subroot.getFb(), 0));
-        fb_a_novo = ((subroot.getFb() + 1) - max(fb_b_novo, 0));
-        subroot.setFb(fb_a_novo);
-        no.setFb(fb_b_novo);
+            // atualizando o fb de A e B após rotações
+	        int fb_b_novo, fb_a_novo = 0;
+	        fb_b_novo= ((no.getFb() + 1) - min(subroot.getFb(), 0));
+	        fb_a_novo = ((subroot.getFb() + 1) - max(fb_b_novo, 0));
+	        subroot.setFb(fb_a_novo);
+	        no.setFb(fb_b_novo);
         }
     }
 
@@ -407,9 +408,7 @@ public class ArvoreAVL implements IarvoreAVL {
             subroot.setFilhoDireita(no);
             no.setPai(subroot);
             
-            int fb_b = no.getFb(),
-                    fb_a = subroot.getFb(),
-                    fb_b_novo, fb_a_novo;
+            int fb_b = no.getFb(),fb_a = subroot.getFb(), fb_b_novo, fb_a_novo;
             fb_b_novo = fb_b - 1 - Math.max(fb_a, 0);
             fb_a_novo = fb_a - 1 + Math.min(fb_b_novo, 0);
             no.setFb(fb_b_novo);
@@ -429,30 +428,28 @@ public class ArvoreAVL implements IarvoreAVL {
     public void rotacaoDEsquerda(NoAVL no) {
        rotacaoSDireta(no.getFilhoDireita()); 
        rotacaoSEsquerda(no);
-       
     }
     
     @Override
     public void atualizarFB(NoAVL no, int tipo, int nofb) {
-        no.setFb(no.getFb() + nofb);
-        
+        // incrementando fb
+    	no.setFb(no.getFb() + nofb);
         int fb = no.getFb();
-        // rotaÃ§Ãµes
-        if (fb == 2) {
+        // Seleção de rotações
+        if (fb == 2) { //rd 
             if (hasLeft(no) && leftChild(no).getFb() >= 0) {
                 rotacaoSDireta(no);
             } else if(hasLeft(no) && leftChild(no).getFb() < 0) {
                 rotacaaoDDireita(no);
             }
-        } else if (fb == -2) {
-            System.out.println("aq " + fb);
+        } else if (fb == -2) { //re
             if (hasRight(no) && rightChild(no).getFb() <= 0) {
                 rotacaoSEsquerda(no);
             } else if(hasRight(no) && rightChild(no).getFb() > 0) {
                 rotacaoDEsquerda(no);
             }
         }
-        //fb
+        //Atualização de fb dos antecessores:  1 (inserção) | 2 (remoção)
         if(tipo==1){
             if(no.getPai()!=null && no.getFb()!=0){
                 if(no.getElemento() < no.getPai().getElemento()){
@@ -461,7 +458,7 @@ public class ArvoreAVL implements IarvoreAVL {
                     atualizarFB(no.getPai(), tipo, -1);
                 }    
             }
-        } else if(tipo == 2) {
+        } else if(tipo==2) {
             if(no.getPai()!=null && no.getFb()==0){
                 if(no.getElemento() < no.getPai().getElemento()){
                     atualizarFB(no.getPai(), tipo, -1);

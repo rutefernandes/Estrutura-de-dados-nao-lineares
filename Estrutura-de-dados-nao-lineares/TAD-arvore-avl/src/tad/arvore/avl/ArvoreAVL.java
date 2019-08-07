@@ -346,6 +346,7 @@ public class ArvoreAVL implements IarvoreAVL {
         return itr;
     }
 
+ 
     @Override
     public void rotacaoSEsquerda(NoAVL no) {
         if(hasRight(no)){
@@ -373,11 +374,10 @@ public class ArvoreAVL implements IarvoreAVL {
             }
             subroot.setFilhoEsquerda(no);
             no.setPai(subroot);
-
             // atualizando o fb de A e B após rotações
-	        int fb_b_novo, fb_a_novo = 0;
+	        int fb_b_novo = 0, fb_a_novo = 0;
 	        fb_b_novo= ((no.getFb() + 1) - min(subroot.getFb(), 0));
-	        fb_a_novo = ((subroot.getFb() + 1) - max(fb_b_novo, 0));
+	        fb_a_novo = ((subroot.getFb() + 1) + max(fb_b_novo, 0));
 	        subroot.setFb(fb_a_novo);
 	        no.setFb(fb_b_novo);
         }
@@ -407,21 +407,20 @@ public class ArvoreAVL implements IarvoreAVL {
             }
             subroot.setFilhoDireita(no);
             no.setPai(subroot);
-            
-            int fb_b = no.getFb(),fb_a = subroot.getFb(), fb_b_novo, fb_a_novo;
-            fb_b_novo = fb_b - 1 - Math.max(fb_a, 0);
-            fb_a_novo = fb_a - 1 + Math.min(fb_b_novo, 0);
+
+            int fb_b_novo, fb_a_novo, fb_b = no.getFb(), fb_a = subroot.getFb();
+            fb_b_novo = (fb_b - 1) - Math.max(fb_a, 0);
+            fb_a_novo = (fb_a - 1) + Math.min(fb_b_novo, 0);
             no.setFb(fb_b_novo);
             subroot.setFb(fb_a_novo);
         }
     }
     
-
     @Override
     public void rotacaaoDDireita(NoAVL no) {
-        rotacaoSEsquerda(no.getFilhoEsquerda());
+    	rotacaoSEsquerda(no.getFilhoEsquerda());
         rotacaoSDireta(no);
-        
+        mostrar();
     }
 
     @Override
@@ -432,7 +431,7 @@ public class ArvoreAVL implements IarvoreAVL {
     
     @Override
     public void atualizarFB(NoAVL no, int tipo, int nofb) {
-        // incrementando fb
+        // atualiza fb
     	no.setFb(no.getFb() + nofb);
         int fb = no.getFb();
         // Seleção de rotações
@@ -447,6 +446,7 @@ public class ArvoreAVL implements IarvoreAVL {
                 rotacaoSEsquerda(no);
             } else if(hasRight(no) && rightChild(no).getFb() > 0) {
                 rotacaoDEsquerda(no);
+                System.out.println("deveria ser aqui");
             }
         }
         //Atualização de fb dos antecessores:  1 (inserção) | 2 (remoção)

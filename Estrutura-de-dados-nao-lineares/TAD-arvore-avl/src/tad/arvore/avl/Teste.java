@@ -8,6 +8,17 @@ public class Teste {
 
     public static void main(String[] args) {
         ArvoreAVL arvore = new ArvoreAVL();
+        arvore.adicionar(40);
+        arvore.adicionar(30);
+        arvore.adicionar(60);
+        arvore.adicionar(70);
+        arvore.adicionar(35);
+        arvore.adicionar(10);
+        arvore.adicionar(5);
+        arvore.adicionar(12);
+        arvore.adicionar(20); 
+        arvore.adicionar(37); 
+        
         //Rotação esquerda
         /* arvore.adicionar(32);
            arvore.adicionar(31);
@@ -41,7 +52,7 @@ public class Teste {
            arvore.adicionar(30);
            */
            
-           arvore.mostrar();
+        //   arvore.mostrar();
     }
     
 }

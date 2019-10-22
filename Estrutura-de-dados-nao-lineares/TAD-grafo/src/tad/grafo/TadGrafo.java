@@ -25,12 +25,12 @@ public class TadGrafo {
          grafo.insereAresta(v1, v2, 1);
          grafo.insereAresta(v1, v3, 2);
          grafo.mostraMatriz();
-       //  System.out.println(grafo.grau(v4));
+       /*  System.out.println(grafo.grau(v4));
          
-        /* Vector<Aresta> arestas = grafo.ArestaIncidentes(v1);
+         Vector<Aresta> arestas = grafo.ArestaIncidentes(v1);
          for(int i = 0; i < arestas.size(); i++) {
              System.out.println(arestas.get(i));
-         }*/
+         } */
      }
     }
    

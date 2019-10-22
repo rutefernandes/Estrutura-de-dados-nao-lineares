@@ -203,9 +203,9 @@ public class Grafo implements IGrafo {
         for (int f = 0; f < qtdVertice; f++) {
             for (int g = 0; g < qtdVertice; g++) {
             	if(matrizAdj[f][g]!=null) {
-            		System.out.print(matrizAdj[f][g].getValor() + " ");
+            		System.out.print(" " + matrizAdj[f][g].getValor() + " ");
             	} else {
-            		System.out.println("null");
+            		System.out.print(" null ");
             	}
             	
             }

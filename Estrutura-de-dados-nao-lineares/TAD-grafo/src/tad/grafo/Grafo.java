@@ -165,7 +165,7 @@ public class Grafo implements IGrafo {
     }
 
     @Override
-    public boolean √©Adjacente(Vertice v, Vertice w) {
+    public boolean ÈAdjacente(Vertice v, Vertice w) {
         int ind1 = achaIndice(v.getChave());
         int ind2 = achaIndice(w.getChave());
         return matrizAdj[ind1][ind2] != null;
@@ -178,13 +178,15 @@ public class Grafo implements IGrafo {
         Vertice aOrigem = a.getVerticeOrigem();
         
         if(aDestino.getChave() == v.getChave()){
-            if(√©Adjacente(aDestino, v)){
+            if(ÈAdjacente(aOrigem, v)){
                 return aOrigem;
             }
         }
         
         if(aOrigem.getChave() == v.getChave()){
-            return aDestino;
+            if(ÈAdjacente(aDestino, v)){
+                return aDestino;
+            }
         }
         
         return null;

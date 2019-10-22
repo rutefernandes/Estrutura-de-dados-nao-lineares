@@ -2,12 +2,6 @@ package tad.grafo;
 import java.util.Vector;
 
 public interface IGrafo {
-    //private int qtdVertice;
-    //private Vector Vertice;
-    //private Aresta matrizAdj[][];
-    //public GrafoSimples()
-    
-    //Grafo Simples
     public abstract void inserirVertice(Vertice Vertice);
     public abstract void removerVertice(Vertice Vertice);
     public abstract Aresta insereAresta(Vertice VerticeUm, Vertice VerticeDois, 
@@ -25,5 +19,5 @@ public interface IGrafo {
     public abstract Vector ArestaIncidentes(Vertice vertice);
     public abstract Vector finalVertice(Aresta a);
     public abstract Vertice oposto(Vertice v, Aresta a) throws OpostoError;
-    public abstract boolean √©Adjacente(Vertice v, Vertice w);
+    public abstract boolean ÈAdjacente(Vertice v, Vertice w);
 }

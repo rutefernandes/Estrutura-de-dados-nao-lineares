@@ -44,7 +44,7 @@ public class Aresta implements IAresta{
     }
 
     @Override
-    public boolean √©Direcionada() {
+    public boolean ÈDirecionada() {
         return direcionada;
     }
 

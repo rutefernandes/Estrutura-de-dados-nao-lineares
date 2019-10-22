@@ -18,15 +18,17 @@ public class Grafo implements IGrafo {
         qtdVertice++;
         vertices.add(vertice);
         Aresta matrizTemp[][] = new Aresta[qtdVertice][qtdVertice];
-        for(int i = 0; i< qtdVertice -1; ++i){
-            for(int j=0; j< qtdVertice -1; ++i){
-                matrizTemp[i][j] = matrizAdj[i][j];
+
+        for(int i = 0; i < qtdVertice - 1; i++){
+            for(int j = 0; j < qtdVertice - 1; j++){
+            	matrizTemp[i][j] = matrizAdj[i][j];              
             }
         }
         
-        for(int i = 0; i< qtdVertice; ++i){
-            matrizTemp[qtdVertice -1][i] = matrizTemp[i][qtdVertice -1] = null;
+        for(int i = 0;i <qtdVertice-1;i++){
+        	matrizTemp[qtdVertice-1][i] = matrizTemp[i][qtdVertice-1] = null;          
         }
+        
         matrizAdj = matrizTemp;
     }
 
@@ -190,4 +192,25 @@ public class Grafo implements IGrafo {
         
         return null;
     }
+    
+    public void mostraVertices() {
+        for (int f = 0; f < vertices.size(); f++) {
+            System.out.print(vertices.elementAt(f) + ",");
+        }
+    }
+
+    public void mostraMatriz() {
+        for (int f = 0; f < qtdVertice; f++) {
+            for (int g = 0; g < qtdVertice; g++) {
+            	if(matrizAdj[f][g]!=null) {
+            		System.out.print(matrizAdj[f][g].getValor() + " ");
+            	} else {
+            		System.out.println("null");
+            	}
+            	
+            }
+            System.out.println();
+        }
+    }
+    
 }

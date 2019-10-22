@@ -34,8 +34,7 @@ public class Grafo implements IGrafo {
     public void removerVertice(Vertice vertice) {
         qtdVertice--;
         int indice = achaIndice(vertice.getChave());
-        vertices.remove(indice);  // remove o vértice do vector    
-        // remove linhas e colunas da matriz de adjacência
+        vertices.remove(indice);  
         Aresta tempMatrizAdj[][]=new Aresta[qtdVertice][qtdVertice];
         int ff=0,gg;
         for(int f=0; f<qtdVertice+1; f++){
@@ -58,7 +57,7 @@ public class Grafo implements IGrafo {
         Aresta a = new Aresta(VerticeUm, VerticeDois, valor);
         int ind1 = achaIndice(VerticeUm.getChave());
         int ind2 = achaIndice(VerticeDois.getChave());
-        matrizAdj[ind1][ind2] = matrizAdj[ind2][ind1];
+        matrizAdj[ind1][ind2] = matrizAdj[ind2][ind1] = a;
         return a;
     }
 
@@ -67,7 +66,7 @@ public class Grafo implements IGrafo {
         Aresta a = new Aresta(VerticeUm, VerticeDois);
         int ind1 = achaIndice(VerticeUm.getChave());
         int ind2 = achaIndice(VerticeDois.getChave());
-        matrizAdj[ind1][ind2] = matrizAdj[ind2][ind1];
+        matrizAdj[ind1][ind2] = matrizAdj[ind2][ind1] = a;
         return a;
     }
 
